@@ -71,15 +71,15 @@ This project is a dynamic website generator designed to handle multiple web deve
 ## Project Structure
 ```plaintext
 .
-├── app/                    # Main folder containing website directories
-│   ├── hugo/               # Hugo websites
-│   └── next.js/            # Next.js websites
-├── utils/                  # Utility folder
+├── app/                              # Main folder containing python
+│   ├── main.py                       # Interactive prompt entry point
+│   ├── requirements.txt              # Python dependencies
+│   ├── server.py                     # Main Python script for serving websites
+│   ├── theme_manager.py              # Python module for managing themes
+│   ├── website.py                    # Website object class
+├── utils/                            # Utility folder
 │   └── docker-compose.generated.yml  # Auto-generated Docker Compose file
-├── server.py               # Main Python script for serving websites
-├── theme_manager.py        # Python module for managing themes
-├── website.py              # Website object class
-├── main.py                 # Interactive prompt entry point
-├── requirements.txt        # Python dependencies
-└── README.md               # Project documentation
-```
+├── websites/                         # Main folder containing website directories
+│   ├── hugo/                         # Hugo websites
+│   └── next.js/                      # Next.js websites
+└── README.md                         # Project documentation

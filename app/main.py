@@ -60,10 +60,11 @@ def main():
             website.initialize_stack()  # Initialize the website stack with generated content
 
         # Theme management options
-        manage_theme = input(f"Would you like to change the theme for {stack}? (yes/no): ").strip().lower()
+        theme_manager = ThemeManager(stack, website.website_name)
+        current_theme = theme_manager.get_current_theme()  # Display current theme
+
+        manage_theme = input(f"Would you like to change the theme for {stack}? (yes/no): (current theme: {current_theme}) ").strip().lower()
         if manage_theme == "yes":
-            theme_manager = ThemeManager(stack, website.website_name)
-            theme_manager.get_current_theme()  # Display current theme
             new_theme = input(f"Please enter the new theme for {stack}: ").strip()
             theme_manager.initialize_theme(new_theme)
             theme_manager.change_theme(new_theme)

@@ -3,7 +3,7 @@ import yaml
 import subprocess
 
 # Base directory where websites are stored
-BASE_DIR = "/app"
+BASE_DIR = "/mnt/sites"
 
 # Default ports for different stacks
 DEFAULT_PORTS = {
