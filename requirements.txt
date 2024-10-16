@@ -1,0 +1,7 @@
+ollama
+craiyon.py
+requests
+pynpm
+hugo
+toml
+bs4

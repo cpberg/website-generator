@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  website-generator:
+    image: python:latest
+    container_name: website-generator
+    volumes:
+      - .:/app  # This will allow changes made in the host to reflect in the container
+    entrypoint: bash -c "pip install -r /app/requirements.txt; python3 -u /app/main.py"
+    environment:
+      - OLLAMA_HOST=http://ollama-server:11434  # Host for Ollama server (internal Docker network)
+      - CRAIYON_API_URL=http://dalle-mini:8000  # URL for accessing the DALL-E Mini server
+    restart: on-failure  # Ensure it restarts in case of failure
+    tty: true
+    stdin_open: true # docker run -i
+
+
+  craiyon-server:
+    image: dalle:latest  # Assuming Craiyon has a Docker image available
+    container_name: craiyon-server
+    ports:
+      - "8000:8000"
+    volumes:
+      - craiyon_data:/data  # Optional: Persistent storage for Craiyon, if needed
+    environment:
+      - PORT=8000
+    restart: always  # Ensure it restarts in case of failure
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 'all'
+              capabilities: [gpu]
+
+  ollama-server:
+    image: ollama/ollama:latest
+    container_name: ollama-server
+    volumes:
+      - ollama_data:/app  # Mount your app directory
+    environment:
+      - OLLAMA_MODEL=llama3.1  # Specify the model to be used (e.g., llama3.1)
+    restart: always  # Ensure it restarts in case of failure
+    tty: true
+    ports:
+      - "11434:11434"  # Expose Ollama API server on port 11434
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 'all'
+              capabilities: [gpu]
+
+volumes:
+  craiyon_data:
+  ollama_data:
