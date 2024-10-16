@@ -5,3 +5,4 @@ pynpm
 hugo
 toml
 bs4
+pyyaml

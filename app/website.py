@@ -4,6 +4,9 @@ import sys
 import toml  # To handle .toml configuration files for Hugo
 import json  # To handle .json configuration files for Next.js
 
+# Base directory where websites are stored
+BASE_DIR = "/mnt/sites"
+
 class Website:
     def __init__(self, stack, website_name, shared_content):
         """
@@ -19,7 +22,7 @@ class Website:
         """
         Determine the appropriate config file based on the stack type and set the config_file attribute.
         """
-        website_dir = f"/app/{self.stack}/{self.website_name}"
+        website_dir = f"{BASE_DIR}/{self.stack}/{self.website_name}"
 
         if not os.path.exists(website_dir):
             raise FileNotFoundError(f"Website directory not found: {website_dir}")
@@ -55,7 +58,7 @@ class Website:
         Initialize the website stack based on the stack type using subprocess.
         If reset=True, the stack will be re-initialized.
         """
-        website_dir = f"/app/{self.stack}/{self.website_name}"
+        website_dir = f"{BASE_DIR}/{self.stack}/{self.website_name}"
 
         try:
             # Check if the directory exists and is not empty

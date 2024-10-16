@@ -5,6 +5,9 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
+# Base directory where websites are stored
+BASE_DIR = "/mnt/sites"
+
 class ThemeManager:
     def __init__(self, stack, website_name):
         self.stack = stack
@@ -19,9 +22,9 @@ class ThemeManager:
         Return the config file path based on the website stack.
         """
         if self.stack == "hugo":
-            return f"/app/{self.stack}/{self.website_name}/hugo.toml"
+            return f"{BASE_DIR}/{self.stack}/{self.website_name}/hugo.toml"
         elif self.stack == "next.js":
-            return f"/app/{self.stack}/{self.website_name}/next.config.js"
+            return f"{BASE_DIR}/{self.stack}/{self.website_name}/next.config.js"
         else:
             raise ValueError(f"Unsupported stack: {self.stack}")
 
@@ -188,7 +191,7 @@ class ThemeManager:
         """
         Install the theme for Hugo from the valid theme URL.
         """
-        theme_dir = f"/app/{self.stack}/{self.website_name}/themes/{theme}"
+        theme_dir = f"{BASE_DIR}/{self.stack}/{self.website_name}/themes/{theme}"
         if not os.path.exists(theme_dir):
             print(f"Installing Hugo theme '{theme}' from {theme_url}...")
             try:
@@ -208,7 +211,7 @@ class ThemeManager:
         """
         print(f"Installing Next.js theme '{theme}' from {theme_url}...")
         try:
-            subprocess.run(["npm", "install", theme], cwd=f"/app/{self.stack}/{self.website_name}", check=True)
+            subprocess.run(["npm", "install", theme], cwd=f"{BASE_DIR}/{self.stack}/{self.website_name}", check=True)
             print(f"Theme '{theme}' installed successfully for Next.js.")
             return True  # Stop further URL checks after successful installation
         except subprocess.CalledProcessError as e:
@@ -219,32 +222,27 @@ class ThemeManager:
         """
         Change the theme in the config file after ensuring it's valid.
         """
-        theme_urls = self.get_theme_sources_with_validation(new_theme)
-        if theme_urls:
-            selected_url = theme_urls[0]
-            try:
-                with open(self.config_file, 'r') as file:
-                    config_content = file.read()
+        try:
+            with open(self.config_file, 'r') as file:
+                config_content = file.read()
 
-                if self.stack == "hugo":
-                    new_content = self.replace_theme_in_hugo_config(config_content, new_theme)
-                elif self.stack == "next.js":
-                    print(f"Next.js doesn't use a direct theme config change.")
-                    return
-                else:
-                    raise ValueError(f"Unsupported stack: {self.stack}")
+            if self.stack == "hugo":
+                new_content = self.replace_theme_in_hugo_config(config_content, new_theme)
+            elif self.stack == "next.js":
+                print(f"Next.js doesn't use a direct theme config change.")
+                return
+            else:
+                raise ValueError(f"Unsupported stack: {self.stack}")
 
-                # Save the new content back to the config file
-                with open(self.config_file, 'w') as file:
-                    file.write(new_content)
-
-                print(f"Theme changed to {new_theme} in {self.stack} for {self.website_name}.")
-            except FileNotFoundError:
-                print(f"Config file not found at {self.config_file}")
-            except Exception as e:
-                print(f"Error changing theme in {self.stack} for {self.website_name}: {e}")
-        else:
-            print(f"Theme '{new_theme}' could not be found.")
+            # Save the new content back to the config file
+            with open(self.config_file, 'w') as file:
+                file.write(new_content)
+            print(f"Theme changed to {new_theme} in {self.stack} for {self.website_name}.")
+        except FileNotFoundError:
+            print(f"Config file not found at {self.config_file}")
+        except Exception as e:
+            print(f"Error changing theme in {self.stack} for {self.website_name}: {e}")
+        print(f"Theme '{new_theme}' could not be found.")
 
     def replace_theme_in_hugo_config(self, config_content, new_theme):
         """
