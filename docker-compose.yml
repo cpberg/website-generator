@@ -10,7 +10,7 @@ services:
     container_name: website-generator
     volumes:
       - ./:/app  # This will allow changes made in the host to reflect in the container
-    entrypoint: bash -c "pip install -r /app/requirements.txt; python3 -u /app/main.py"
+    entrypoint: bash -c "wget https://deb.nodesource.com/setup_16.x; bash setup_16.x; apt-get install -y nodejs; pip install -r /app/requirements.txt; python3 -u /app/main.py"
     environment:
       - OLLAMA_HOST=http://ollama-server:11434  # Host for Ollama server (internal Docker network)
       - CRAIYON_API_URL=http://dalle-mini:8000  # URL for accessing the DALL-E Mini server
