@@ -36,6 +36,7 @@ services:
 
   ollama-server:
     image: ollama/ollama:latest
+    command: pull llama3.1
     container_name: ollama-server
     volumes:
       - ollama_data:/app  # Mount your app directory
