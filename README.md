@@ -69,6 +69,7 @@ This project is a dynamic website generator designed to handle multiple web deve
     3. Follow the prompts to initialize or modify the Next.js website.
 
 ## Project Structure
+```plaintext
 .
 ├── app/                    # Main folder containing website directories
 │   ├── hugo/               # Hugo websites
@@ -81,4 +82,4 @@ This project is a dynamic website generator designed to handle multiple web deve
 ├── main.py                 # Interactive prompt entry point
 ├── requirements.txt        # Python dependencies
 └── README.md               # Project documentation
-
+```
