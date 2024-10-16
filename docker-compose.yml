@@ -2,10 +2,14 @@ version: '3.8'
 
 services:
   website-generator:
+    depends_on:
+      ollama-server:
+        condition: service_healthy
+        restart: true
     image: python:latest
     container_name: website-generator
     volumes:
-      - .:/app  # This will allow changes made in the host to reflect in the container
+      - ./:/app  # This will allow changes made in the host to reflect in the container
     entrypoint: bash -c "pip install -r /app/requirements.txt; python3 -u /app/main.py"
     environment:
       - OLLAMA_HOST=http://ollama-server:11434  # Host for Ollama server (internal Docker network)
@@ -36,7 +40,6 @@ services:
 
   ollama-server:
     image: ollama/ollama:latest
-    command: pull llama3.1
     container_name: ollama-server
     volumes:
       - ollama_data:/app  # Mount your app directory
@@ -46,6 +49,12 @@ services:
     tty: true
     ports:
       - "11434:11434"  # Expose Ollama API server on port 11434
+    healthcheck:
+      test: ollama pull llama3.1 || exit 1
+      interval: 5m
+      timeout: 5m
+      retries: 1
+      start_period: 60s
     deploy:
       resources:
         reservations:
